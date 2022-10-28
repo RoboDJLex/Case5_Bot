@@ -9,4 +9,5 @@ class User(BaseModel):
     character: List[str]
 
 class UserSkills(BaseModel):
+#    type: str
     list: List[str]
