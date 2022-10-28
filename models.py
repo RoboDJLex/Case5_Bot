@@ -11,3 +11,13 @@ class User(BaseModel):
 class UserSkills(BaseModel):
 #    type: str
     list: List[str]
+
+
+class Project(BaseModel):
+    title: str
+    nedeed_hard: List[str]
+    nedeed_soft: List[str]
+    nedeed_character: List[str]
+    compatibility_cup: int
+    max_teammates: int
+    memders: List[int]
