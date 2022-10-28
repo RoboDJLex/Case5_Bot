@@ -26,5 +26,22 @@ def check_compatibility(user: models.User, project: models.Project):
 
 
 def init_sort(user: models.User, projects: List[models.Project]):
+
     for project in projects:
         check_compatibility(user, project)
+        return "К сожалению, вам не нашлось проекта :("
+
+
+
+def get_user_projects(user: models.User, projects: List[models.Project]):
+
+    output = []
+
+    for project in projects:
+        if user.id in project.memders:
+            output.append[project]
+    
+    if len(output) > 0:
+        return output
+    else:
+        return "К сожалению, у вас не нашлось проектов :("
