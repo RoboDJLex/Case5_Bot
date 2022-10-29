@@ -1,8 +1,9 @@
 #______________________________TODOLIST__________________________________#
 #1. Экспорт данных во флэт файл.
 #2. Импорт данных из флэт файла в адекватно выглядящую анкету.
-#3. Забивает на заполнение личностных данных и сразу переходит на вывод.
-#4. В ввод тегов и имени попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай (Не факт, что будет актуально при использовании флэт файла).
+#3!!! Забивает на заполнение личностных данных и сразу переходит на вывод. UPD: Исправлено, но теперь не переходит в функцию вывода.
+#4. В ввод тегов попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай (Не факт, что будет актуально при использовании флэт файла).
+#4.1 На ввод впитывает только первое сообщение, на остальные не реагирует.
 
 from asyncio.windows_events import NULL
 import telebot
@@ -29,8 +30,7 @@ def hadle_text(m):
         user.id = m.chat.id
         if m.text.strip() == 'Ввести имя' or m.text.strip() == 'Изменить имя':
                 msg = bot.send_message (m.chat.id, 'Введите Фамилию и Имя', reply_markup=types.ReplyKeyboardRemove())
-                bot.register_next_step_handler(msg, UserData)
-                user.fullname = m.text
+                bot.register_next_step_handler(msg, Naming)
         if m.text.strip() == 'Добавить умения':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
                 
@@ -40,9 +40,9 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Хард-скилы"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
-                while m.text!= 'Далее':
+                while m.text != 'Далее':
                         user.soft_skills.append(m.text)
-                        if m.text.strip()!= 'Далее':
+                        if m.text == 'Далее':
                                 break
 
         if m.text.strip() == 'Хард-скилы':
@@ -54,9 +54,9 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Личностные"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
-                while m.text!= 'Личностные':
+                while m.text != 'Личностные':
                         user.hard_skills.append(m.text)
-                        if m.text.strip()!= 'Личностные':
+                        if m.text == 'Личностные':
                                 break
 
         if m.text.strip() == 'Личностные':
@@ -65,15 +65,24 @@ def hadle_text(m):
                 for tag in inventory.character_tags:
                         markup.add(types.KeyboardButton(tag))
 
-                markup.add(types.KeyboardButton("Завершить"))
+                markup.add(types.KeyboardButton("Сохранить"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
-                while m.text!= 'Завершить':
+                while m.text != 'Сохранить':
                         user.character.append(m.text)
-                        if m.text.strip()!= 'Завершить':
+                        if m.text == 'Сохранить':
                                 UserData(m)
                                 break
         
+
+def Naming(m):
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1=types.KeyboardButton("Изменить имя")
+        item2=types.KeyboardButton("Добавить умения")
+        markup.add(item1)
+        markup.add(item2)
+        user.fullname = m.text.strip()
+        bot.send_message (m.chat.id, 'Вас зовут: '+user.fullname, reply_markup=markup)
 
 def UserData(m):
         markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
