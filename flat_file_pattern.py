@@ -59,12 +59,13 @@ def register_user(user: models.User):
 
     base.save('Users.xlsx')
 
-pavlik = {
-    'id': 12332,
-    'fullname': 'Fuck Pasha',
-    'hard_skills': "['Python','Html']",
-    'soft_skills': "['Python','Html']",
-    'character': "['Python','Html']"
-}
+def get_user_by_uid(id, users):
 
-register_user(pavlik)
+    users = get_users(users)
+
+    for i in range(1, len(users)):
+        if users[i]['id'] == id:
+            return users[i]
+    
+    return "Данного пользователя нет в базе ("
+    
