@@ -5,12 +5,22 @@
 #4. В ввод тегов попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай (Не факт, что будет актуально при использовании флэт файла).
 #4.1 На ввод впитывает только первое сообщение, на остальные не реагирует.
 
-from asyncio.windows_events import NULL
 import telebot
 from telebot import types
 import models, inventory
 
 bot = telebot.TeleBot("5620161730:AAEHy5MphcICV2Uo8izjqkAArQvGUL1vOXI", parse_mode=None)
+
+
+def add_hard_skill(m, user):
+        user.hard_skills.append(m.text)
+
+def add_soft_skill(m, user):
+        user.soft_skills.append(m.text)
+
+def add_character(m, user):
+        user.character.append(m.text)
+
 
 @bot.message_handler(commands=["start"])
 def start(m):
@@ -21,7 +31,7 @@ def start(m):
         markup.add(item2)
         bot.send_message(m.chat.id, 'Привет!\nСоздай анкету.',  reply_markup=markup)
 user = models.User
-user.fullname = NULL
+user.fullname = ''
 user.soft_skills = []
 user.hard_skills = []
 user.character = []
@@ -40,10 +50,11 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Хард-скилы"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
-                while m.text != 'Далее':
-                        user.soft_skills.append(m.text)
-                        if m.text == 'Далее':
+                while m.text != 'Хард-скилы':
+                        bot.register_next_step_handler(m, add_soft_skill, user)
+                        if m.text == 'Хард-скилы':
                                 break
+
 
         if m.text.strip() == 'Хард-скилы':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -55,7 +66,7 @@ def hadle_text(m):
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
                 while m.text != 'Личностные':
-                        user.hard_skills.append(m.text)
+                        bot.register_next_step_handler(m, add_hard_skill, user)
                         if m.text == 'Личностные':
                                 break
 
@@ -69,7 +80,7 @@ def hadle_text(m):
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
                 while m.text != 'Сохранить':
-                        user.character.append(m.text)
+                        bot.register_next_step_handler(m, add_character, user)
                         if m.text == 'Сохранить':
                                 UserData(m)
                                 break
