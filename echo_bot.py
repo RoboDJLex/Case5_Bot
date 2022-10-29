@@ -1,3 +1,10 @@
+#______________________________TODOLIST__________________________________#
+#1. Починить ввод имени.
+#2. Экспорт данных во флэт файл.
+#3. Импорт данных из флэт файла в адекватно выглядящую анкету.
+#4. Починить переход в UserData после заполнения личностных.
+#5. В ввод тегов попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай.
+
 import telebot
 from telebot import types
 import models, inventory
@@ -32,7 +39,7 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Хард-скилы"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
-                while m.text.strip()!= 'Далее':
+                while m.text!= 'Далее':
                         user.soft_skills.append(m.text)
                         if m.text.strip()!= 'Далее':
                                 break
@@ -46,7 +53,7 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Личностные"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
-                while m.text.strip()!= 'Личностные':
+                while m.text!= 'Личностные':
                         user.hard_skills.append(m.text)
                         if m.text.strip()!= 'Личностные':
                                 break
@@ -60,11 +67,10 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Завершить"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
-                while m.text.strip()!= 'Завершить':
+                while m.text!= 'Завершить':
                         user.character.append(m.text)
                         if m.text.strip()!= 'Завершить':
                                 break
-
                 UserData(m)
         
 
@@ -81,11 +87,3 @@ def UserData(m):
         bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
 
 bot.infinity_polling()
-
-
-#______________________________TODOLIST__________________________________#
-#1. Починить ввод имени.
-#2. Экспорт данных во флэт файл.
-#3. Импорт данных из флэт файла в адекватно выглядящую анкету.
-#4. Починить переход в UserData после заполнения личностных.
-#5. В ввод тегов попадют только сообщения о переходе в другой вид тегов.
