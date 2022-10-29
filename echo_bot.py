@@ -29,25 +29,29 @@ def hadle_text(m):
                 for tag in inventory.soft_tags:
                         markup.add(types.KeyboardButton(tag))
 
-                markup.add(types.KeyboardButton("Далее"))
+                markup.add(types.KeyboardButton("Хард-скилы"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
                 while m.text.strip()!= 'Далее':
                         user.soft_skills.append(m.text)
+                        if m.text.strip()!= 'Далее':
+                                break
 
-        if m.text.strip() == 'Далее':
+        if m.text.strip() == 'Хард-скилы':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
 
                 for tag in inventory.hard_tags:
                         markup.add(types.KeyboardButton(tag))
 
-                markup.add(types.KeyboardButton("Следующее"))
+                markup.add(types.KeyboardButton("Личностные"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
-                while m.text.strip()!= 'Следующее':
+                while m.text.strip()!= 'Личностные':
                         user.hard_skills.append(m.text)
+                        if m.text.strip()!= 'Личностные':
+                                break
 
-        if m.text.strip() == 'Следующее':
+        if m.text.strip() == 'Личностные':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
 
                 for tag in inventory.character_tags:
@@ -58,7 +62,10 @@ def hadle_text(m):
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
                 while m.text.strip()!= 'Завершить':
                         user.character.append(m.text)
-                #UserData(m)
+                        if m.text.strip()!= 'Завершить':
+                                break
+
+                UserData(m)
         
 
 def UserData(m):
@@ -77,7 +84,8 @@ bot.infinity_polling()
 
 
 #______________________________TODOLIST__________________________________#
-#1. Подписи к кнопкам софт/хард скилов и личностных.
+#1. Починить ввод имени.
 #2. Экспорт данных во флэт файл.
 #3. Импорт данных из флэт файла в адекватно выглядящую анкету.
-#4. 
+#4. Починить переход в UserData после заполнения личностных.
+#5. В ввод тегов попадют только сообщения о переходе в другой вид тегов.
