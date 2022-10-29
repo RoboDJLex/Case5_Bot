@@ -2,8 +2,9 @@
 #1. Экспорт данных во флэт файл.
 #2. Импорт данных из флэт файла в адекватно выглядящую анкету.
 #3. Забивает на заполнение личностных данных и сразу переходит на вывод.
-#4. В ввод тегов и имени попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай.
+#4. В ввод тегов и имени попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай (Не факт, что будет актуально при использовании флэт файла).
 
+from asyncio.windows_events import NULL
 import telebot
 from telebot import types
 import models, inventory
@@ -19,6 +20,7 @@ def start(m):
         markup.add(item2)
         bot.send_message(m.chat.id, 'Привет!\nСоздай анкету.',  reply_markup=markup)
 user = models.User
+user.fullname = NULL
 user.soft_skills = []
 user.hard_skills = []
 user.character = []
@@ -69,8 +71,8 @@ def hadle_text(m):
                 while m.text!= 'Завершить':
                         user.character.append(m.text)
                         if m.text.strip()!= 'Завершить':
+                                UserData(m)
                                 break
-                UserData(m)
         
 
 def UserData(m):
