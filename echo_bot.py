@@ -1,10 +1,10 @@
 #______________________________TODOLIST__________________________________#
 #1. Экспорт данных во флэт файл.
 #2. Импорт данных из флэт файла в адекватно выглядящую анкету.
-#3!!! Забивает на заполнение личностных данных и сразу переходит на вывод. UPD: Исправлено, но теперь не переходит в функцию вывода.
-#4. В ввод тегов попадют только сообщения о переходе в другой вид тегов и больше ничего, сколько на кнопки ни тыкай (Не факт, что будет актуально при использовании флэт файла).
-#4.1 На ввод впитывает только первое сообщение, на остальные не реагирует.
+#3!!! Забивает на заполнение личностных данных и сразу переходит на вывод.
+#4. В умениях на ввод принимает только первое видимое сообщение.
 
+from turtle import goto
 import telebot
 from telebot import types
 import models, inventory
@@ -35,6 +35,7 @@ user.fullname = ''
 user.soft_skills = []
 user.hard_skills = []
 user.character = []
+
 @bot.message_handler(content_types=["text"])
 def hadle_text(m):
         user.id = m.chat.id
@@ -52,7 +53,7 @@ def hadle_text(m):
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
                 while m.text != 'Хард-скилы':
                         bot.register_next_step_handler(m, add_soft_skill, user)
-                        if m.text == 'Хард-скилы':
+                        if m.text != 'Хард-скилы':
                                 break
 
 
@@ -67,7 +68,7 @@ def hadle_text(m):
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
                 while m.text != 'Личностные':
                         bot.register_next_step_handler(m, add_hard_skill, user)
-                        if m.text == 'Личностные':
+                        if m.text != 'Личностные':
                                 break
 
         if m.text.strip() == 'Личностные':
