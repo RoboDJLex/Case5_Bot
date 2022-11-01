@@ -4,7 +4,6 @@
 #3!!! Забивает на заполнение личностных данных и сразу переходит на вывод.
 #4. В умениях на ввод принимает только первое видимое сообщение.
 
-from turtle import goto
 import telebot
 from telebot import types
 import models, inventory
@@ -12,15 +11,25 @@ import models, inventory
 bot = telebot.TeleBot("5620161730:AAEHy5MphcICV2Uo8izjqkAArQvGUL1vOXI", parse_mode=None)
 
 
-def add_hard_skill(m, user):
-        user.hard_skills.append(m.text)
-
 def add_soft_skill(m, user):
-        user.soft_skills.append(m.text)
+        while True:
+                user.hard_skills.append(m.text)
+                if m.text == 'Хард-скилы':
+                        break
+
+
+def add_hard_skill(m, user):
+        while True:
+                user.soft_skills.append(m.text)
+                if m.text == 'Личностные':
+                        break
 
 def add_character(m, user):
-        user.character.append(m.text)
-
+        while True:
+                user.character.append(m.text)
+                if m.text == 'Сохранить':
+                        break
+        UserData(m)
 
 @bot.message_handler(commands=["start"])
 def start(m):
@@ -49,13 +58,10 @@ def hadle_text(m):
                         markup.add(types.KeyboardButton(tag))
 
                 markup.add(types.KeyboardButton("Хард-скилы"))
-
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
-                while m.text != 'Хард-скилы':
-                        bot.register_next_step_handler(m, add_soft_skill, user)
-                        if m.text != 'Хард-скилы':
-                                break
+                add_soft_skill(m, user)
 
+                
 
         if m.text.strip() == 'Хард-скилы':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -66,10 +72,8 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Личностные"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
-                while m.text != 'Личностные':
-                        bot.register_next_step_handler(m, add_hard_skill, user)
-                        if m.text != 'Личностные':
-                                break
+
+                add_hard_skill(m, user)                    
 
         if m.text.strip() == 'Личностные':
                 markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -80,12 +84,8 @@ def hadle_text(m):
                 markup.add(types.KeyboardButton("Сохранить"))
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
-                while m.text != 'Сохранить':
-                        bot.register_next_step_handler(m, add_character, user)
-                        if m.text == 'Сохранить':
-                                UserData(m)
-                                break
-        
+
+                add_character(m, user)    
 
 def Naming(m):
         markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
