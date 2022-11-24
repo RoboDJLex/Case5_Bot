@@ -78,21 +78,31 @@ def add_hard_skill(m):
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
                 add_character(m)
         else:
-                msg=bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
+                if m.text=='Далее':
+                        msg=bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
 
-                user.hard_skills.append(m.text)
+                        bot.register_next_step_handler(msg, add_hard_skill)
+                else:
+                        user.hard_skills.append(m.text)
 
-                bot.register_next_step_handler(msg, add_hard_skill)
+                        msg=bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
+
+                        bot.register_next_step_handler(msg, add_hard_skill)
 
 def add_character(m):
         if m.text=='Сохранить':
                 UserData(m, user)
         else:
-                msg=bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
+                if m.text=='Следующее':
+                        msg=bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
 
-                user.character.append(m.text)
+                        bot.register_next_step_handler(msg, add_character)
+                else:
+                        user.character.append(m.text)
 
-                bot.register_next_step_handler(msg, add_character)
+                        msg=bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
+
+                        bot.register_next_step_handler(msg, add_character)
 
 
 def UserData(m, user):
