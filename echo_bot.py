@@ -37,27 +37,7 @@ def handle_text(m):
 
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам софт-скилы', reply_markup=markup)
 
-                add_soft_skill(m,user)
-
-        if m.text.strip() == 'Далее':
-                markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-                
-                for tag in inventory.soft_tags:
-                        markup.add(types.KeyboardButton(tag))
-
-                markup.add(types.KeyboardButton("Следующее"))
-
-                bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
-
-        if m.text.strip() == 'Следующее':
-                markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
-                
-                for tag in inventory.soft_tags:
-                        markup.add(types.KeyboardButton(tag))
-
-                markup.add(types.KeyboardButton("Сохранить"))
-
-                bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
+                add_soft_skill(m)
 
 def Naming(m):
         markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -67,28 +47,44 @@ def Naming(m):
         markup.add(item2)
         user.fullname = m.text.strip()
         bot.send_message (m.chat.id, 'Вас зовут: '+user.fullname, reply_markup=markup)
-
-def add_soft_skill(m, user):
+        
+def add_soft_skill(m):
         if m.text=='Далее':
-                add_hard_skill(m, user)
+                markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+                
+                for tag in inventory.hard_tags:
+                        markup.add(types.KeyboardButton(tag))
+
+                markup.add(types.KeyboardButton("Следующее"))
+
+                bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
+                add_hard_skill(m)
         else:
                 user.soft_skills.append(m.text)
 
                 msg=bot.send_message (m.chat.id, 'Ваши софт-скилы: '+' '.join(user.soft_skills))
                 
-                bot.register_next_step_handler(msg, add_soft_skill(m, user))
+                bot.register_next_step_handler(msg, add_soft_skill)
 
-def add_hard_skill(m, user):
+def add_hard_skill(m):
         if m.text=='Следующее':
-                add_character(m, user)
+                markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+                
+                for tag in inventory.character_tags:
+                        markup.add(types.KeyboardButton(tag))
+
+                markup.add(types.KeyboardButton("Сохранить"))
+
+                bot.send_message (m.chat.id, 'Выберите подходящие Вам личностные качества', reply_markup=markup)
+                add_character(m)
         else:
                 msg=bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
 
                 user.hard_skills.append(m.text)
 
-                bot.register_next_step_handler(msg, add_hard_skill(m, user))
+                bot.register_next_step_handler(msg, add_hard_skill)
 
-def add_character(m, user):
+def add_character(m):
         if m.text=='Сохранить':
                 UserData(m, user)
         else:
@@ -96,7 +92,7 @@ def add_character(m, user):
 
                 user.character.append(m.text)
 
-                bot.register_next_step_handler(msg, add_character(m, user))
+                bot.register_next_step_handler(msg, add_character)
 
 
 def UserData(m, user):
@@ -111,8 +107,8 @@ def UserData(m, user):
         bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
         bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
 
-bot.enable_save_next_step_handlers(delay=0.5)
+#bot.enable_save_next_step_handlers(delay=0.5)
 
-bot.load_next_step_handlers()
+#bot.load_next_step_handlers()
 
 bot.infinity_polling()
