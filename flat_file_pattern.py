@@ -1,7 +1,6 @@
 from openpyxl import *
 import models
 
-
 base = load_workbook('Users.xlsx')
 
 base.active
@@ -45,17 +44,17 @@ def get_users(users):
 
 def register_user(user: models.User):
 
-    rows = ['A','B','C','D','E']
+    row=users.max_row+1
 
-    fields = ['id','fullname','hard_skills','soft_skills','character']
+    users[row][0].value=user.id
 
-    j = 0
+    users[row][1].value=user.fullname
 
-    position = users.max_row + 1
+    users[row][2].value='  '.join(user.soft_skills)
 
-    for row in rows:
-        users[f'{row}{position}'] = user[fields[j]]
-        j += 1
+    users[row][3].value='  '.join(user.hard_skills)
+
+    users[row][4].value='  '.join(user.character)
 
     base.save('Users.xlsx')
 

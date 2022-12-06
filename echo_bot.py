@@ -1,6 +1,7 @@
 import telebot
 from telebot import types
 import models, inventory
+import flat_file_pattern
 
 bot = telebot.TeleBot("5620161730:AAEHy5MphcICV2Uo8izjqkAArQvGUL1vOXI", parse_mode=None)
 
@@ -60,11 +61,16 @@ def add_soft_skill(m):
                 bot.send_message (m.chat.id, 'Выберите подходящие Вам хард-скилы', reply_markup=markup)
                 add_hard_skill(m)
         else:
-                user.soft_skills.append(m.text)
-
-                msg=bot.send_message (m.chat.id, 'Ваши софт-скилы: '+' '.join(user.soft_skills))
+                if m.text=='Добавить умения':
+                        msg=bot.send_message (m.chat.id, 'Ваши софт-скилы: '+' '.join(user.soft_skills))
                 
-                bot.register_next_step_handler(msg, add_soft_skill)
+                        bot.register_next_step_handler(msg, add_soft_skill)
+                else:
+                        user.soft_skills.append(m.text)
+
+                        msg=bot.send_message (m.chat.id, 'Ваши софт-скилы: '+' '.join(user.soft_skills))
+                
+                        bot.register_next_step_handler(msg, add_soft_skill)
 
 def add_hard_skill(m):
         if m.text=='Следующее':
@@ -91,6 +97,7 @@ def add_hard_skill(m):
 
 def add_character(m):
         if m.text=='Сохранить':
+                flat_file_pattern.register_user(user)
                 UserData(m, user)
         else:
                 if m.text=='Следующее':
@@ -116,9 +123,5 @@ def UserData(m, user):
         bot.send_message (m.chat.id, 'Ваши софт-скилы: '+' '.join(user.soft_skills))
         bot.send_message (m.chat.id, 'Ваши хард-скилы: '+' '.join(user.hard_skills))
         bot.send_message (m.chat.id, 'Ваши личностные качества: '+' '.join(user.character))
-
-#bot.enable_save_next_step_handlers(delay=0.5)
-
-#bot.load_next_step_handlers()
 
 bot.infinity_polling()
